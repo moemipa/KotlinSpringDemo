@@ -4,12 +4,9 @@ import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
-
-const val EMPLOYEE_ROOT_URL = "/api/v1/employee"
-
 @RestController
-@RequestMapping(EMPLOYEE_ROOT_URL)
-@Api(tags = [EMPLOYEE_ROOT_URL])
+@RequestMapping("/api/v1/employee")
+@Api(tags = ["Employee"])
 class EmployeeController {
 
     @Autowired
