@@ -4,6 +4,11 @@ import org.springframework.format.annotation.DateTimeFormat
 import java.util.*
 import javax.persistence.*
 
+class Result<T>(val data: T) {
+    val code: Int = 0
+    val message: String = "成功"
+}
+
 @Entity
 class Employee {
 

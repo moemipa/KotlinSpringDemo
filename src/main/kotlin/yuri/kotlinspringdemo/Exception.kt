@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import java.lang.RuntimeException
 import javax.servlet.http.HttpServletRequest
 import org.springframework.web.context.request.WebRequest
+import java.text.SimpleDateFormat
+import java.util.*
 
 enum class ErrorEnum (val code: Int, val msg: String) {
     UNKONW_ERROR(999, "未知错误"),
@@ -19,7 +21,8 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException::class)
     fun handleException(request: HttpServletRequest, exception: CustomException): String {
-        ZSLog(exception)
+        val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
+        println("$date  ${exception.stackTrace[0]}")
         request.setAttribute("javax.servlet.error.status_code", 500)
         request.setAttribute("custom", exception)
         return "forward:/error";
@@ -31,8 +34,8 @@ class MyErrorAttributes : DefaultErrorAttributes() {
 
     override fun getErrorAttributes(request: WebRequest, includeStackTrace: Boolean): Map<String, Any> {
         val map = super.getErrorAttributes(request, includeStackTrace)
-        val exception = request.getAttribute("custom", 0) as? CustomException ?: return map
-        map["code"] = exception.code
+        val exception = request.getAttribute("custom", 0) as? CustomException
+        map["code"] = exception?.code ?: 999
         return map
     }
 }

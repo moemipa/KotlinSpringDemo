@@ -13,42 +13,43 @@ class EmployeeController {
     lateinit var service: EmployeeService
 
     @GetMapping
-    fun getAllEmployee(): Collection<Employee> {
-        return service.findAll()
+    fun getAllEmployee(): Result<Collection<Employee>> {
+        return Result(service.findAll())
     }
 
     @GetMapping("/{id}")
-    fun getEmployee(@PathVariable("id") id: Long?): Employee {
+    fun getEmployee(@PathVariable("id") id: Long?): Result<Employee> {
         return when {
-            id != null -> service.find(id) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR)
+            id != null -> Result(service.find(id) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR))
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
 
     @PostMapping
-    fun createEmployee(@RequestBody employee: Employee?) {
+    fun createEmployee(@RequestBody employee: Employee?): Result<*> {
         println("createEmployee: $employee?")
         return when {
-            employee != null -> service.create(employee)
+            employee != null ->  Result(service.create(employee))
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
 
     @PutMapping("/{id}")
-    fun updateEmployee(@PathVariable("id") id: Long?, @RequestBody employee: Employee?) {
+    fun updateEmployee(@PathVariable("id") id: Long?, @RequestBody employee: Employee?): Result<*> {
         println("updateEmployee: $employee?")
         return when {
-            employee != null && id != null -> service.uptate(id, employee)
+            employee != null && id != null ->  Result(service.uptate(id, employee))
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
 
     @DeleteMapping("/{id}")
-    fun deleteEmployee(@PathVariable("id") id: Long?) {
+    fun deleteEmployee(@PathVariable("id") id: Long?): Result<*> {
         return when {
-            id != null -> service.delete(id)
+            id != null ->  Result(service.delete(id))
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
 
 }
+

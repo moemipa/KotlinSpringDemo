@@ -16,11 +16,8 @@ import java.util.*
 
 fun <T> ZSLog(msg: T, tag: String? = null) {
     val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
-    val info: String = when (msg) {
-        is Exception -> "${msg.stackTrace[0]}"
-        else -> "${Throwable().stackTrace[2]} $msg"
-    }
-    println("${tag ?: date}  $info")
+    val s = Throwable().stackTrace[2]
+    println("${tag ?: date}  $s  $msg")
 }
 
 @Configuration
