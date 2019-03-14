@@ -19,13 +19,8 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException::class)
     fun handleException(request: HttpServletRequest, exception: CustomException): String {
-        exception.printStackTrace()
-        val status = when (exception) {
-            is ClientException -> 400
-            is ServerException -> 500
-            else -> 999
-        }
-        request.setAttribute("javax.servlet.error.status_code", status)
+        ZSLog(exception)
+        request.setAttribute("javax.servlet.error.status_code", 500)
         request.setAttribute("custom", exception)
         return "forward:/error";
     }
@@ -35,16 +30,14 @@ class GlobalExceptionHandler {
 class MyErrorAttributes : DefaultErrorAttributes() {
 
     override fun getErrorAttributes(request: WebRequest, includeStackTrace: Boolean): Map<String, Any> {
-        val exception: CustomException? = request.getAttribute("custom", 0) as? CustomException
         val map = super.getErrorAttributes(request, includeStackTrace)
-        map["code"] = exception?.code ?: 999
+        val exception = request.getAttribute("custom", 0) as? CustomException ?: return map
+        map["code"] = exception.code
         return map
     }
 }
 
-class ServerException(errorEnum: ErrorEnum): CustomException(errorEnum)
-class ClientException(errorEnum: ErrorEnum): CustomException(errorEnum)
-abstract class CustomException(errorEnum: ErrorEnum) : RuntimeException(errorEnum.msg) {
+class CustomException(errorEnum: ErrorEnum) : RuntimeException(errorEnum.msg) {
     var code: Int = errorEnum.code
 }
 

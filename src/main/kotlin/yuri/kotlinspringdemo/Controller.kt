@@ -20,8 +20,8 @@ class EmployeeController {
     @GetMapping("/{id}")
     fun getEmployee(@PathVariable("id") id: Long?): Employee {
         return when {
-            id != null -> service.find(id) ?: throw ClientException(ErrorEnum.RESOURCE_ERROR)
-            else -> throw ClientException(ErrorEnum.PARAM_ERROR)
+            id != null -> service.find(id) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR)
+            else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
 
@@ -30,7 +30,7 @@ class EmployeeController {
         println("createEmployee: $employee?")
         return when {
             employee != null -> service.create(employee)
-            else -> throw ClientException(ErrorEnum.PARAM_ERROR)
+            else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
 
@@ -39,7 +39,7 @@ class EmployeeController {
         println("updateEmployee: $employee?")
         return when {
             employee != null && id != null -> service.uptate(id, employee)
-            else -> throw ClientException(ErrorEnum.PARAM_ERROR)
+            else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
 
@@ -47,7 +47,7 @@ class EmployeeController {
     fun deleteEmployee(@PathVariable("id") id: Long?) {
         return when {
             id != null -> service.delete(id)
-            else -> throw ClientException(ErrorEnum.PARAM_ERROR)
+            else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
 
