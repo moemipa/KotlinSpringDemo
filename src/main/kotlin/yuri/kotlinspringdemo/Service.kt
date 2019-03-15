@@ -1,6 +1,8 @@
 package yuri.kotlinspringdemo
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,8 +19,8 @@ class EmployeeService {
     }
 
     @Transactional
-    fun uptate(id: Long, employee: Employee) {
-        println("uptate: $id $employee")
+    fun update(id: Long, employee: Employee) {
+        println("update: $id $employee")
         if (repository.existsById(id)) {
             employee.id = id
             repository.save(employee)
@@ -26,8 +28,9 @@ class EmployeeService {
     }
 
     @Transactional
-    fun findAll(): Collection<Employee> {
-        return repository.findAll()
+    fun findAll(pageable: Pageable): Page<Employee> {
+        println("findAll: $pageable")
+        return repository.findAll(pageable)
     }
 
     @Transactional

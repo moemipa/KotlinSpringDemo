@@ -2,6 +2,9 @@ package yuri.kotlinspringdemo
 
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -13,8 +16,13 @@ class EmployeeController {
     lateinit var service: EmployeeService
 
     @GetMapping
-    fun getAllEmployee(): Result<Collection<Employee>> {
-        return Result(service.findAll())
+    fun getAllEmployee(
+            @RequestParam(required = false) page: Int?,
+            @RequestParam(required = false) size: Int?
+    ): Result<PageResult<Employee>> {
+        val pageable: Pageable = PageRequest.of(page ?: 0, size ?: 10)
+        val pageResult: Page<Employee> = service.findAll(pageable)
+        return Result(PageResult(pageResult, page ?: 0))
     }
 
     @GetMapping("/{id}")
@@ -38,7 +46,7 @@ class EmployeeController {
     fun updateEmployee(@PathVariable("id") id: Long?, @RequestBody employee: Employee?): Result<*> {
         println("updateEmployee: $employee?")
         return when {
-            employee != null && id != null ->  Result(service.uptate(id, employee))
+            employee != null && id != null ->  Result(service.update(id, employee))
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
