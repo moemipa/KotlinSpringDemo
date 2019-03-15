@@ -13,13 +13,21 @@ import org.springframework.web.bind.annotation.*
 class EmployeeController {
 
     @Autowired
-    lateinit var service: EmployeeService
+    lateinit var employeeService: EmployeeService
+
+    @Autowired
+    lateinit var departmentService: DepartmentService
 
     @PostMapping
     fun createEmployee(@RequestBody employee: Employee?): Result<*> {
-        println("createEmployee: $employee?")
+        ZSLog("createEmployee: $employee")
         return when {
-            employee != null ->  Result(service.create(employee))
+            employee != null -> {
+                employee.department?.id
+                        ?.let { departmentService.find(it) }
+                        ?.let { employee.department = it }
+                Result(employeeService.create(employee))
+            }
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
@@ -27,16 +35,21 @@ class EmployeeController {
     @DeleteMapping("/{id}")
     fun deleteEmployee(@PathVariable id: Long?): Result<*> {
         return when {
-            id != null ->  Result(service.delete(id))
+            id != null ->  Result(employeeService.delete(id))
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
 
-    @PutMapping("/{id}")
-    fun updateEmployee(@PathVariable id: Long?, @RequestBody employee: Employee?): Result<*> {
-        println("updateEmployee: $employee?")
+    @PutMapping
+    fun updateEmployee(@RequestBody employee: Employee?): Result<*> {
+        ZSLog("updateEmployee: $employee")
         return when {
-            employee != null && id != null ->  Result(service.update(id, employee))
+            employee != null -> {
+                employee.department?.id
+                        ?.let { departmentService.find(it) }
+                        ?.let { employee.department = it }
+                Result(employeeService.update(employee))
+            }
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
@@ -44,7 +57,7 @@ class EmployeeController {
     @GetMapping("/{id}")
     fun getEmployee(@PathVariable id: Long?): Result<Employee> {
         return when {
-            id != null -> Result(service.find(id) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR))
+            id != null -> Result(employeeService.find(id) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR))
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
     }
@@ -55,7 +68,7 @@ class EmployeeController {
             @RequestParam(required = false) size: Int?
     ): Result<PageResult<Employee>> {
         val pageable: Pageable = PageRequest.of(page ?: 0, size ?: 10)
-        val pageResult: Page<Employee> = service.findAll(pageable)
+        val pageResult: Page<Employee> = employeeService.findAll(pageable)
         return Result(PageResult(pageResult, page ?: 0))
     }
 

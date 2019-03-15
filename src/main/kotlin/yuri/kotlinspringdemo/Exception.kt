@@ -14,6 +14,11 @@ enum class ErrorEnum (val code: Int, val msg: String) {
     UNKONW_ERROR(999, "未知错误"),
     PARAM_ERROR(101, "参数错误"),
     RESOURCE_ERROR(102, "资源不存在"),
+    ALREADY_EXISTS_ERROR(103, "资源已存在"),
+}
+
+class CustomException(errorEnum: ErrorEnum) : RuntimeException(errorEnum.msg) {
+    var code: Int = errorEnum.code
 }
 
 @ControllerAdvice
@@ -40,8 +45,5 @@ class MyErrorAttributes : DefaultErrorAttributes() {
     }
 }
 
-class CustomException(errorEnum: ErrorEnum) : RuntimeException(errorEnum.msg) {
-    var code: Int = errorEnum.code
-}
 
 

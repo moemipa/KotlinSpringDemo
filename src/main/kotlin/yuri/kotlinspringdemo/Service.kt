@@ -14,8 +14,11 @@ class EmployeeService {
 
     @Transactional
     fun create(employee: Employee) {
-        println("create: $employee")
-        repository.save(employee)
+        ZSLog("create: $employee")
+        when {
+            !repository.existsById(employee.id) -> repository.save(employee)
+            else -> throw CustomException(ErrorEnum.ALREADY_EXISTS_ERROR)
+        }
     }
 
     @Transactional
@@ -24,11 +27,11 @@ class EmployeeService {
     }
 
     @Transactional
-    fun update(id: Long, employee: Employee) {
-        println("update: $id $employee")
-        if (repository.existsById(id)) {
-            employee.id = id
-            repository.save(employee)
+    fun update(employee: Employee) {
+        ZSLog("update: $employee")
+        when {
+            repository.existsById(employee.id) -> repository.save(employee)
+            else -> throw CustomException(ErrorEnum.RESOURCE_ERROR)
         }
     }
 
@@ -39,7 +42,7 @@ class EmployeeService {
 
     @Transactional
     fun findAll(pageable: Pageable): Page<Employee> {
-        println("findAll: $pageable")
+        ZSLog("findAll: $pageable")
         return repository.findAll(pageable)
     }
 
