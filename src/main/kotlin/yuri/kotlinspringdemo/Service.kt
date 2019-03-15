@@ -19,6 +19,11 @@ class EmployeeService {
     }
 
     @Transactional
+    fun delete(id: Long) {
+        repository.deleteById(id)
+    }
+
+    @Transactional
     fun update(id: Long, employee: Employee) {
         println("update: $id $employee")
         if (repository.existsById(id)) {
@@ -28,20 +33,16 @@ class EmployeeService {
     }
 
     @Transactional
-    fun findAll(pageable: Pageable): Page<Employee> {
-        println("findAll: $pageable")
-        return repository.findAll(pageable)
-    }
-
-    @Transactional
     fun find(id: Long): Employee? {
         return repository.findById(id).orElse(null)
     }
 
     @Transactional
-    fun delete(id: Long) {
-        repository.deleteById(id)
+    fun findAll(pageable: Pageable): Page<Employee> {
+        println("findAll: $pageable")
+        return repository.findAll(pageable)
     }
+
 }
 
 @Service
@@ -51,10 +52,10 @@ class DepartmentService {
     lateinit var repository: DepartmentRepository
 
     @Transactional
-    fun findAll(): Collection<Department> = repository.findAll()
-
-    @Transactional
     fun find(id: Long): Department? {
         return repository.findById(id).orElse(null)
     }
+
+    @Transactional
+    fun findAll(): Collection<Department> = repository.findAll()
 }

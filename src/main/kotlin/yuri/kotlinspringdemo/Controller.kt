@@ -15,24 +15,6 @@ class EmployeeController {
     @Autowired
     lateinit var service: EmployeeService
 
-    @GetMapping
-    fun getAllEmployee(
-            @RequestParam(required = false) page: Int?,
-            @RequestParam(required = false) size: Int?
-    ): Result<PageResult<Employee>> {
-        val pageable: Pageable = PageRequest.of(page ?: 0, size ?: 10)
-        val pageResult: Page<Employee> = service.findAll(pageable)
-        return Result(PageResult(pageResult, page ?: 0))
-    }
-
-    @GetMapping("/{id}")
-    fun getEmployee(@PathVariable("id") id: Long?): Result<Employee> {
-        return when {
-            id != null -> Result(service.find(id) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR))
-            else -> throw CustomException(ErrorEnum.PARAM_ERROR)
-        }
-    }
-
     @PostMapping
     fun createEmployee(@RequestBody employee: Employee?): Result<*> {
         println("createEmployee: $employee?")
@@ -42,8 +24,16 @@ class EmployeeController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    fun deleteEmployee(@PathVariable id: Long?): Result<*> {
+        return when {
+            id != null ->  Result(service.delete(id))
+            else -> throw CustomException(ErrorEnum.PARAM_ERROR)
+        }
+    }
+
     @PutMapping("/{id}")
-    fun updateEmployee(@PathVariable("id") id: Long?, @RequestBody employee: Employee?): Result<*> {
+    fun updateEmployee(@PathVariable id: Long?, @RequestBody employee: Employee?): Result<*> {
         println("updateEmployee: $employee?")
         return when {
             employee != null && id != null ->  Result(service.update(id, employee))
@@ -51,12 +41,22 @@ class EmployeeController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    fun deleteEmployee(@PathVariable("id") id: Long?): Result<*> {
+    @GetMapping("/{id}")
+    fun getEmployee(@PathVariable id: Long?): Result<Employee> {
         return when {
-            id != null ->  Result(service.delete(id))
+            id != null -> Result(service.find(id) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR))
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
+    }
+
+    @GetMapping
+    fun getAllEmployee(
+            @RequestParam(required = false) page: Int?,
+            @RequestParam(required = false) size: Int?
+    ): Result<PageResult<Employee>> {
+        val pageable: Pageable = PageRequest.of(page ?: 0, size ?: 10)
+        val pageResult: Page<Employee> = service.findAll(pageable)
+        return Result(PageResult(pageResult, page ?: 0))
     }
 
 }
