@@ -15,8 +15,8 @@ class EmployeeService {
 
     @Transactional
     fun findAll(page: Int, size: Int): Page<Employee> {
+        ZSLog("findAll(page: $page, size: $size)")
         val pageable: Pageable = PageRequest.of(page, size)
-        ZSLog("findAll: ${pageable.toJsonString()}")
         return repository.findAll(pageable)
     }
 
@@ -27,7 +27,7 @@ class EmployeeService {
 
     @Transactional
     fun create(employee: Employee) {
-        ZSLog("create: $employee")
+        ZSLog("create(employee: $employee)")
         when {
             !repository.existsById(employee.id) -> repository.save(employee)
             else -> throw CustomException(ErrorEnum.ALREADY_EXISTS_ERROR)
@@ -36,7 +36,7 @@ class EmployeeService {
 
     @Transactional
     fun update(employee: Employee) {
-        ZSLog("update: $employee")
+        ZSLog("update(employee: $employee)")
         when {
             repository.existsById(employee.id) -> repository.save(employee)
             else -> throw CustomException(ErrorEnum.RESOURCE_ERROR)
@@ -57,7 +57,9 @@ class DepartmentService {
     lateinit var repository: DepartmentRepository
 
     @Transactional
-    fun findAll(): Collection<Department> = repository.findAll()
+    fun findAll(): Collection<Department> {
+        return repository.findAll()
+    }
 
     @Transactional
     fun find(id: Long): Department? {
@@ -66,6 +68,7 @@ class DepartmentService {
 
     @Transactional
     fun create(department: Department) {
+        ZSLog("create(department: $department)")
         when {
             !repository.existsById(department.id) -> repository.save(department)
             else -> throw CustomException(ErrorEnum.ALREADY_EXISTS_ERROR)
@@ -74,6 +77,7 @@ class DepartmentService {
 
     @Transactional
     fun uptdate(department: Department) {
+        ZSLog("update(department: $department)")
         when {
             repository.existsById(department.id) -> repository.save(department)
             else -> throw CustomException(ErrorEnum.RESOURCE_ERROR)

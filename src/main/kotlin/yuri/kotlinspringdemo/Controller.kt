@@ -30,7 +30,6 @@ class EmployeeController {
 
     @PostMapping
     fun createEmployee(@RequestBody employee: Employee?): Result<*> {
-        ZSLog("createEmployee: $employee")
         return when {
             employee != null -> {
                 employee.department?.id
@@ -44,7 +43,6 @@ class EmployeeController {
 
     @PutMapping
     fun updateEmployee(@RequestBody employee: Employee?): Result<*> {
-        ZSLog("updateEmployee: $employee")
         return when {
             employee != null -> {
                 employee.department?.id

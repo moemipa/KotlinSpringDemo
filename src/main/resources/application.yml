@@ -9,12 +9,12 @@ spring:
     password: "password"
 
   jpa:
-    properties:
-      hibernate:
-#        show_sql: true
-#        format_sql: true
     database: MYSQL
     open-in-view: true
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+#        show_sql: true
+#        format_sql: true
 

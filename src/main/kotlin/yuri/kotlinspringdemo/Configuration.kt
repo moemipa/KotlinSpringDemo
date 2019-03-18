@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun <T> ZSLog(msg: T, tag: String? = null) {
-    val date: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
+    val date: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(Date())
     val s: StackTraceElement = Throwable().stackTrace[2]
     println("${tag ?: date}  $s  $msg")
 }
