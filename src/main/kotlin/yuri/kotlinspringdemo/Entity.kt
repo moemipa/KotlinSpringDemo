@@ -26,7 +26,7 @@ class Employee(@Id @GeneratedValue var id: Long) {
     @Column
     var gender: Int? = null
 
-    @ManyToOne(cascade = [CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE])
+    @ManyToOne(cascade = [CascadeType.MERGE])
     var department: Department? = null
 
     @Column

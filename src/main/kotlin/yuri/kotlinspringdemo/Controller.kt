@@ -33,7 +33,7 @@ class EmployeeController {
         return when {
             employee != null -> {
                 employee.department?.id
-                        ?.let { departmentService.find(it) }
+                        ?.let { departmentService.find(it) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR) }
                         ?.let { employee.department = it }
                 Result(employeeService.create(employee))
             }
@@ -46,7 +46,7 @@ class EmployeeController {
         return when {
             employee != null -> {
                 employee.department?.id
-                        ?.let { departmentService.find(it) }
+                        ?.let { departmentService.find(it) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR) }
                         ?.let { employee.department = it }
                 Result(employeeService.update(employee))
             }
