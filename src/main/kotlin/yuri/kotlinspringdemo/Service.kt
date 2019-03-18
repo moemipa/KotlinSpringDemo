@@ -2,6 +2,7 @@ package yuri.kotlinspringdemo
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -41,8 +42,9 @@ class EmployeeService {
     }
 
     @Transactional
-    fun findAll(pageable: Pageable): Page<Employee> {
-        ZSLog("findAll: $pageable")
+    fun findAll(page: Int, size: Int): Page<Employee> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        ZSLog("findAll: ${pageable.toJsonString()}")
         return repository.findAll(pageable)
     }
 

@@ -10,9 +10,10 @@ class Result<T>(val data: T) {
     val message: String = "成功"
 }
 
-class PageResult<T>(page: Page<T>, var currentPage: Int) {
+class PageResult<T>(page: Page<T>) {
     var totalCount: Long = page.totalElements
     var totalPage: Int = page.totalPages
+    var currentPage: Int = page.pageable.pageNumber
     var items: Collection<T> = page.content
 }
 
