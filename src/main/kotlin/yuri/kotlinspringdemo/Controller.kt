@@ -15,6 +15,19 @@ class EmployeeController {
     @Autowired
     lateinit var departmentService: DepartmentService
 
+    @GetMapping
+    fun getAllEmployee(
+            @RequestParam(required = false, defaultValue = "0") page: Int,
+            @RequestParam(required = false, defaultValue = "10") size: Int
+    ): Result<PageResult<Employee>> {
+        return Result(PageResult(employeeService.findAll(page, size)))
+    }
+
+    @GetMapping("/{id}")
+    fun getEmployee(@PathVariable id: Long): Result<Employee> {
+        return Result(employeeService.find(id) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR))
+    }
+
     @PostMapping
     fun createEmployee(@RequestBody employee: Employee?): Result<*> {
         ZSLog("createEmployee: $employee")
@@ -27,11 +40,6 @@ class EmployeeController {
             }
             else -> throw CustomException(ErrorEnum.PARAM_ERROR)
         }
-    }
-
-    @DeleteMapping("/{id}")
-    fun deleteEmployee(@PathVariable id: Long): Result<*> {
-        return Result(employeeService.delete(id))
     }
 
     @PutMapping
@@ -48,17 +56,9 @@ class EmployeeController {
         }
     }
 
-    @GetMapping("/{id}")
-    fun getEmployee(@PathVariable id: Long): Result<Employee> {
-        return Result(employeeService.find(id) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR))
-    }
-
-    @GetMapping
-    fun getAllEmployee(
-            @RequestParam(required = false, defaultValue = "0") page: Int,
-            @RequestParam(required = false, defaultValue = "10") size: Int
-    ): Result<PageResult<Employee>> {
-        return Result(PageResult(employeeService.findAll(page, size)))
+    @DeleteMapping("/{id}")
+    fun deleteEmployee(@PathVariable id: Long): Result<*> {
+        return Result(employeeService.delete(id))
     }
 
 }

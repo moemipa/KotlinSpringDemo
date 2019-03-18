@@ -40,7 +40,10 @@ class Employee(@Id @GeneratedValue var id: Long) {
 }
 
 @Entity
-class Department(@Id @GeneratedValue var id: Long, @Column(unique = true) var departmentName: String) {
+class Department(@Id @GeneratedValue var id: Long) {
+
+    @Column(unique = true)
+    var departmentName: String? = null
 
     override fun toString(): String {
         return this.toJsonString()

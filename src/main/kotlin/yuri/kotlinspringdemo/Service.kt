@@ -14,17 +14,24 @@ class EmployeeService {
     lateinit var repository: EmployeeRepository
 
     @Transactional
+    fun findAll(page: Int, size: Int): Page<Employee> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        ZSLog("findAll: ${pageable.toJsonString()}")
+        return repository.findAll(pageable)
+    }
+
+    @Transactional
+    fun find(id: Long): Employee? {
+        return repository.findById(id).orElse(null)
+    }
+
+    @Transactional
     fun create(employee: Employee) {
         ZSLog("create: $employee")
         when {
             !repository.existsById(employee.id) -> repository.save(employee)
             else -> throw CustomException(ErrorEnum.ALREADY_EXISTS_ERROR)
         }
-    }
-
-    @Transactional
-    fun delete(id: Long) {
-        repository.deleteById(id)
     }
 
     @Transactional
@@ -37,15 +44,8 @@ class EmployeeService {
     }
 
     @Transactional
-    fun find(id: Long): Employee? {
-        return repository.findById(id).orElse(null)
-    }
-
-    @Transactional
-    fun findAll(page: Int, size: Int): Page<Employee> {
-        val pageable: Pageable = PageRequest.of(page, size)
-        ZSLog("findAll: ${pageable.toJsonString()}")
-        return repository.findAll(pageable)
+    fun delete(id: Long) {
+        repository.deleteById(id)
     }
 
 }
@@ -57,10 +57,32 @@ class DepartmentService {
     lateinit var repository: DepartmentRepository
 
     @Transactional
+    fun findAll(): Collection<Department> = repository.findAll()
+
+    @Transactional
     fun find(id: Long): Department? {
         return repository.findById(id).orElse(null)
     }
 
     @Transactional
-    fun findAll(): Collection<Department> = repository.findAll()
+    fun create(department: Department) {
+        when {
+            !repository.existsById(department.id) -> repository.save(department)
+            else -> throw CustomException(ErrorEnum.ALREADY_EXISTS_ERROR)
+        }
+    }
+
+    @Transactional
+    fun uptdate(department: Department) {
+        when {
+            repository.existsById(department.id) -> repository.save(department)
+            else -> throw CustomException(ErrorEnum.RESOURCE_ERROR)
+        }
+    }
+
+    @Transactional
+    fun delete(id: Long) {
+        repository.deleteById(id)
+    }
+
 }
