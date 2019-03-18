@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 enum class ErrorEnum (val code: Int, val msg: String) {
-    UNKONW_ERROR(999, "未知错误"),
+    UNKNOWN_ERROR(999, "未知错误"),
     PARAM_ERROR(101, "参数错误"),
     RESOURCE_ERROR(102, "资源不存在"),
     ALREADY_EXISTS_ERROR(103, "资源已存在"),
@@ -30,7 +30,7 @@ class GlobalExceptionHandler {
         println("$date  ${exception.stackTrace[0]}")
         request.setAttribute("javax.servlet.error.status_code", 500)
         request.setAttribute("custom", exception)
-        return "forward:/error";
+        return "forward:/error"
     }
 }
 
