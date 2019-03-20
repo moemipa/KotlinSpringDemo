@@ -8,28 +8,34 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class EmployeeService {
+class service {
 
     @Autowired
-    lateinit var repository: EmployeeRepository
+    lateinit var employeeRepository: EmployeeRepository
+
+    @Autowired
+    lateinit var departmentRepository: DepartmentRepository
 
     @Transactional
     fun findAll(page: Int, size: Int): Page<Employee> {
         ZSLog("findAll(page: $page, size: $size)")
         val pageable: Pageable = PageRequest.of(page, size)
-        return repository.findAll(pageable)
+        return employeeRepository.findAll(pageable)
     }
 
     @Transactional
     fun find(id: Long): Employee? {
-        return repository.findById(id).orElse(null)
+        return employeeRepository.findById(id).orElse(null)
     }
 
     @Transactional
     fun create(employee: Employee) {
         ZSLog("create(employee: $employee)")
         when {
-            !repository.existsById(employee.id) -> repository.save(employee)
+            !employeeRepository.existsById(employee.id) -> {
+                updateDepartment(employee)
+                employeeRepository.save(employee)
+            }
             else -> throw CustomException(ErrorEnum.ALREADY_EXISTS_ERROR)
         }
     }
@@ -38,14 +44,24 @@ class EmployeeService {
     fun update(employee: Employee) {
         ZSLog("update(employee: $employee)")
         when {
-            repository.existsById(employee.id) -> repository.save(employee)
+            employeeRepository.existsById(employee.id) -> {
+                updateDepartment(employee)
+                employeeRepository.save(employee)
+            }
             else -> throw CustomException(ErrorEnum.RESOURCE_ERROR)
         }
     }
 
     @Transactional
     fun delete(id: Long) {
-        repository.deleteById(id)
+        employeeRepository.deleteById(id)
+    }
+
+    private fun updateDepartment(employee: Employee) {
+        employee.department?.id
+                ?.let { departmentRepository.findById(it) }
+                ?.let { it.orElse(throw CustomException(ErrorEnum.PARAM_ERROR)) }
+                ?.let { employee.department = it }
     }
 
 }
