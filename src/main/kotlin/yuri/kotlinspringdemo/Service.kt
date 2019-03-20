@@ -18,6 +18,8 @@ class EmployeeService {
     fun findAll(page: Int, size: Int) = PageRequest.of(page, size)
             .debug()
             .let { employeeRepository.findAll(it) }
+            .takeUnless { it.isEmpty }
+            ?: throw CustomException(ErrorEnum.RESOURCE_ERROR)
 
     @Transactional
     fun find(id: Long) = employeeRepository.findById(id).toNullable()
