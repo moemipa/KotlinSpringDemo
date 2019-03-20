@@ -17,6 +17,8 @@ class PageResult<T>(page: Page<T>) {
     var items: Collection<T> = page.content
 }
 
+enum class Gender { MALE, FEMALE }
+
 @Entity
 class Employee(@Id @GeneratedValue var id: Long) {
 
@@ -24,7 +26,8 @@ class Employee(@Id @GeneratedValue var id: Long) {
     var name: String? = null
 
     @Column
-    var gender: Int? = null
+    @Enumerated
+    var gender: Gender? = null
 
     @ManyToOne(cascade = [CascadeType.MERGE])
     var department: Department? = null
