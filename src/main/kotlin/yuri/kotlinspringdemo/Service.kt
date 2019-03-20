@@ -29,7 +29,7 @@ class EmployeeService {
             .takeUnless { employeeRepository.existsById(it.id) }
             ?.also { updateDepartment(it) }
             ?.let { employeeRepository.save(it) }
-            ?: throw CustomException(ErrorEnum.RESOURCE_ERROR)
+            ?: throw CustomException(ErrorEnum.ALREADY_EXISTS_ERROR)
 
     @Transactional
     fun update(employee: Employee) = employee
