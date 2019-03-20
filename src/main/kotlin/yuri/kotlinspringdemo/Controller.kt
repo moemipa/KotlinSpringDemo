@@ -10,41 +10,29 @@ import org.springframework.web.bind.annotation.*
 class EmployeeController {
 
     @Autowired
-    lateinit var service: service
+    lateinit var service: EmployeeService
 
     @GetMapping
     fun getAllEmployee(
             @RequestParam(required = false, defaultValue = "0") page: Int,
             @RequestParam(required = false, defaultValue = "10") size: Int
-    ): Result<PageResult<Employee>> {
-        return Result(PageResult(service.findAll(page, size)))
-    }
+    ) = Result(PageResult(service.findAll(page, size)))
 
     @GetMapping("/{id}")
-    fun getEmployee(@PathVariable id: Long): Result<Employee> {
-        return Result(service.find(id) ?: throw CustomException(ErrorEnum.RESOURCE_ERROR))
-    }
+    fun getEmployee(@PathVariable id: Long) = Result(service.find(id))
 
     @PostMapping
-    fun createEmployee(@RequestBody employee: Employee?): Result<*> {
-        return when {
-            employee != null -> Result(service.create(employee))
-            else -> throw CustomException(ErrorEnum.PARAM_ERROR)
-        }
-    }
+    fun createEmployee(@RequestBody employee: Employee?) = employee
+            ?.let { Result(service.create(it)) }
+            ?: throw CustomException(ErrorEnum.PARAM_ERROR)
 
     @PutMapping
-    fun updateEmployee(@RequestBody employee: Employee?): Result<*> {
-        return when {
-            employee != null -> Result(service.update(employee))
-            else -> throw CustomException(ErrorEnum.PARAM_ERROR)
-        }
-    }
+    fun updateEmployee(@RequestBody employee: Employee?) = employee
+            ?.let { Result(service.update(it)) }
+            ?: throw CustomException(ErrorEnum.PARAM_ERROR)
 
     @DeleteMapping("/{id}")
-    fun deleteEmployee(@PathVariable id: Long): Result<*> {
-        return Result(service.delete(id))
-    }
+    fun deleteEmployee(@PathVariable id: Long) = Result(service.delete(id))
 
 }
 

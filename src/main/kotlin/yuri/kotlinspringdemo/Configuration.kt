@@ -14,9 +14,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun <T> ZSLog(msg: T, tag: String? = null) {
+fun <T> ZSLog(msg: T, tag: String? = null, index: Int = 2) {
     val date: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(Date())
-    val s: StackTraceElement = Throwable().stackTrace[2]
+    val s: StackTraceElement = Throwable().stackTrace[index]
     println("${tag ?: date}  $s  $msg")
 }
 
@@ -24,20 +24,17 @@ fun <T> ZSLog(msg: T, tag: String? = null) {
 @EnableSwagger2
 @ComponentScan("yuri.kotlinspringdemo")
 class SwaggerConfig {
-    @Bean
-    fun api(): Docket {
-        return Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(Predicates.not(PathSelectors.regex("/error")))
-                .build()
-                .apiInfo(apiInfo())
-    }
 
-    private fun apiInfo(): ApiInfo {
-        return ApiInfoBuilder()
-                .title("REST API")
-                .version("1.0")
-                .build()
-    }
+    @Bean
+    fun api(): Docket = Docket(DocumentationType.SWAGGER_2)
+            .select()
+            .apis(RequestHandlerSelectors.any())
+            .paths(Predicates.not(PathSelectors.regex("/error")))
+            .build()
+            .apiInfo(apiInfo())
+
+    private fun apiInfo(): ApiInfo = ApiInfoBuilder()
+            .title("REST API")
+            .version("1.0")
+            .build()
 }
