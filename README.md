@@ -1,3 +1,3 @@
 # KotlinSpringDemo
 
-an REST API demo with Kotlin and Spring
+a RESTful API demo with Kotlin and Spring
