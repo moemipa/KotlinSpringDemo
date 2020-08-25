@@ -14,12 +14,15 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun <T> ZSLog(msg: T, tag: String? = null, index: Int = 2) {
+fun <T> log(msg: T, tag: String? = null, index: Int = 2) {
     val date: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(Date())
     val s: StackTraceElement = Throwable().stackTrace[index]
     println("${tag ?: date}  $s  $msg")
 }
 
+/**
+ * http://localhost:8070/swagger-ui.html
+ */
 @Configuration
 @EnableSwagger2
 @ComponentScan("yuri.kotlinspringdemo")
